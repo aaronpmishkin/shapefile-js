@@ -217,7 +217,8 @@ var shpFuncObj = {
 function makeParseCoord(trans){
 	if(trans){
 		return function(data,offset){
-			return trans.inverse([data.getFloat64(offset,true),data.getFloat64(offset+8,true)]);
+			// return trans.inverse([data.getFloat64(offset,true),data.getFloat64(offset+8,true)]);
+			return [data.getFloat64(offset,true),data.getFloat64(offset+8,true)]; // CHANGE
 		};
 	}else{
 		return function(data,offset){
@@ -16043,7 +16044,7 @@ exports.inverse = function(p) {
   return p;
 
 };
-exports.names = ["stere"];
+exports.names = ["stere", "Stereographic_South_Pole", "Polar Stereographic (variant B)"]; // CHANGE
 },{"../common/adjust_lon":73,"../common/msfnz":83,"../common/phi2z":84,"../common/sign":89,"../common/tsfnz":92}],129:[function(require,module,exports){
 var gauss = require('./gauss');
 var adjust_lon = require('../common/adjust_lon');
@@ -17585,8 +17586,29 @@ shp.parseZip = function(buffer, whiteList) {
 			parsed = shp.combine([parseShp(zip[name + '.shp'], zip[name + '.prj']), zip[name + '.dbf']]);
 			parsed.fileName = name;
 		}
+		// CHANGE
+		var projId = 'EPSG:4326';
+
+		if (zip[name + '.prj'].oProj.projName === 'longlat')
+			projId = 'EPSG:4326';
+		else if (zip[name + '.prj'].oProj.projName === 'Stereographic_North_Pole')
+			projId = 'EPSG:3995';
+		else if (zip[name + '.prj'].oProj.projName === 'Stereographic_South_Pole')
+			projId = 'EPSG:3031';
+
+		parsed.crs = 
+		{
+			type: 'name',
+			properties:
+			{
+				name: projId,
+			},
+		};
 		return parsed;
 	});
+
+
+
 	if (geojson.length === 1) {
 		return geojson[0];
 	}
