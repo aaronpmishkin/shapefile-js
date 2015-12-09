@@ -5,7 +5,7 @@
   "homepage": "https://github.com/aaronpmishkin/shapefile-js",
   "authors": [
     "Calvin Metcalf <calvin.metcalf@state.ma.us>",
-    "Aaron Mishkin",
+    "Aaron Mishkin <aaronpmishkin@gmail.com>",
   ],
   "main": "dist/shp.js",
   "keywords": [
